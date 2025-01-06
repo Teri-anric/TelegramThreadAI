@@ -1,5 +1,19 @@
 
 services:
+  db:
+    image: postgres:16.1
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-ttai_password}
+      - POSTGRES_USER=${DATABASE_USER:-ttai_user}
+      - POSTGRES_DB=${DATABASE_NAME:-ttai_db}
+      - POSTGRES_PORT=${DATABASE_PORT:-5432}
+    expose:
+      - ${DATABASE_PORT:-5432}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+  
   backend:
     build: ./backend
     env_file:
@@ -9,11 +23,19 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
+    depends_on:
+      - db
   
   frontend:
     build: ./frontend
+    env_file:
+      - .env
     ports:
       - "80:80"
       - "443:443"
     depends_on:
       - backend
+
+
+volumes:
+  pg_data:

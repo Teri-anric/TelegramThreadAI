@@ -19,8 +19,7 @@ export const useTelegramLogin = () => {
     },
 
     auth: async function(user) {
-      const auth_data = JSON.stringify(user)
-      const data = await api.login(auth_data);
+      const data = await api.login(user);
       if (data.status === 200) {
         dispatch(setUserData(data));
         console.log("Login successful");
@@ -30,7 +29,6 @@ export const useTelegramLogin = () => {
     },
 
     logOut: function () {
-      api.logout();
       dispatch(removeUserData());
     }
   };

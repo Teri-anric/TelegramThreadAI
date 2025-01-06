@@ -8,7 +8,6 @@ const axiosBackend = axios.create({
     },
 });
 
-
 export const api = {
     makeRequest: async (method, url, data, options) => {
         return axiosBackend.request({
@@ -18,17 +17,17 @@ export const api = {
             ...options,
         });
     },
-    login: async (user) => {
-        return {status: 200, ...JSON.parse(user)} // TODO: remove this
-        return api.makeRequest("post", "/login", user);
+    login: async (credentials, login_type = "tg_login_widget") => {        
+        const response = await api.makeRequest("post", "/auth/login", {
+            credentials: credentials,
+            login_type: login_type
+        });
+        return response.data;
     },
-    logout: async () => {
-        return true; // TODO: remove this
-        return api.makeRequest("post", "/logout");
-    },
-    getProfile: async () => {
-        return {status: 200, ...JSON.parse(user)} // TODO: remove this
-        return api.makeRequest("get", "/profile");  
+    
+    getProfile: async (userId) => {
+        const response = await api.makeRequest("get", `/auth/profile?user_id=${userId}`);
+        return response.data;
     }
 }
 
