@@ -21,7 +21,7 @@ async def login(
     Authenticate a user via Telegram login
     """
     if login_data.login_type == "tg_login_widget" and not verify_telegram_login(login_data.credentials):
-        raise HTTPException(status_code=404, detail="Invalid Telegram login data")
+        raise HTTPException(status_code=400, detail="Invalid Telegram login data")
 
     user = await user_repo.create_or_update_user(
         login_data.credentials.id,
