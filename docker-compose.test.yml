@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.test
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_USER=ttai_user
+      - DATABASE_PASSWORD=ttai_password
+      - DATABASE_NAME=ttai_test_db
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+
+  db:
+    image: postgres:16.1
+    environment:
+      - POSTGRES_DB=ttai_test_db
+      - POSTGRES_USER=ttai_user
+      - POSTGRES_PASSWORD=ttai_password
+    ports:
+      - "5432:5432" 
