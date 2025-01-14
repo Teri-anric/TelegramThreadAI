@@ -14,17 +14,12 @@ def verify_telegram_login(data: Dict[str, Any]) -> bool:
     Returns:
         bool: Whether the login data is valid
     """
-    # Extract user data
-    user_data = data.get('user', {})
-    
-    # Check if required fields are present
-    required_fields = ['id', 'first_name', 'auth_date', 'hash']
-    if not all(field in user_data for field in required_fields):
+    if not data.get('hash'):
         return False
-    
+
     # Create data-check-string (sorted alphabetically)
     check_data = {
-        k: v for k, v in user_data.items() 
+        k: v for k, v in data.items() 
         if k != 'hash' and k != 'photo_url'
     }
     
@@ -45,15 +40,15 @@ def verify_telegram_login(data: Dict[str, Any]) -> bool:
     ).hexdigest()
     
     # Check signature
-    if signature != user_data['hash']:
+    if signature != data['hash']:
         return False
     
-    # Check auth date (optional, prevents old login attempts)
-    auth_date = int(user_data['auth_date'])
-    current_time = int(datetime.utcnow().timestamp())
+    # # Check auth date (optional, prevents old login attempts)
+    # auth_date = int(data['auth_date'])
+    # current_time = int(datetime.utcnow().timestamp())
     
-    # Allow login within last 5 minutes
-    if current_time - auth_date > 300:
-        return False
+    # # Allow login within last 5 minutes
+    # if current_time - auth_date > 300:
+    #     return False
     
     return True

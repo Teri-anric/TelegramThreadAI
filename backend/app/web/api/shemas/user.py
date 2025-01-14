@@ -1,20 +1,26 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Literal, Union
 
 
 class UserSchema(BaseModel):
+    model_config = ConfigDict(
+        extra='allow',
+        from_attributes=True
+    )
+    
     id: int
     telegram_id: int
-    first_name: str
+    first_name: str | None = None
     last_name: str | None = None
     username: str | None = None
     photo_url: str | None = None
 
-    class Config:
-        from_attributes = True
-
 
 class TelegramLoginWidgetCredentials(BaseModel):
+    model_config = ConfigDict(
+        extra='allow'
+    )
+    
     id: int
     first_name: str
     last_name: str | None = None
