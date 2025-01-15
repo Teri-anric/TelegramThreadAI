@@ -28,7 +28,7 @@ jobs:
     - name: Run Pylint
       run: |
         cd backend
-        pylint $(git ls-files '*.py') --disable=all --enable=C0114,C0115,C0116,C0411,W0611,W1201,W0401,W0231
+        pylint app tests --disable=all --enable=C0114,C0115,C0116,C0411,W0611,W1201,W0401,W0231
         # code quality rules
         # C0114 - missing-module-docstring
         # C0115 - missing-class-docstring

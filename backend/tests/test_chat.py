@@ -3,9 +3,10 @@ Test chat endpoints.
 """
 
 import pytest
+from fastapi.testclient import TestClient
+
 from app.utils.access_token import create_access_token
 from app.web.main import app
-from fastapi.testclient import TestClient
 
 client = TestClient(app)
 

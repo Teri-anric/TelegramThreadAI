@@ -2,8 +2,9 @@
 User model.
 """
 
-from app.db.models.base import Base
 from sqlalchemy import Column, Integer, String
+
+from app.db.models.base import Base
 
 
 class User(Base):

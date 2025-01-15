@@ -6,8 +6,9 @@ from datetime import UTC, datetime, timedelta
 from typing import Optional
 
 import jwt
-from app.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
 from fastapi import HTTPException, status
+
+from app.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):

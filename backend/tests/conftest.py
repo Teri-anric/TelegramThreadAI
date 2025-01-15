@@ -3,9 +3,10 @@ Conftest file for backend tests.
 """
 
 import pytest
-from app.config import DATABASE_URL
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+from app.config import DATABASE_URL
 
 # Create a test database engine
 test_engine = create_engine(DATABASE_URL)

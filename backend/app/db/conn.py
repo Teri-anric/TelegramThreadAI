@@ -2,9 +2,10 @@
 Database connection module.
 """
 
-from app.config import DATABASE_URL
 from sqlalchemy.ext.asyncio import (AsyncEngine, AsyncSession,
                                     async_sessionmaker, create_async_engine)
+
+from app.config import DATABASE_URL
 
 
 def get_async_engine(url: str = DATABASE_URL) -> AsyncEngine:

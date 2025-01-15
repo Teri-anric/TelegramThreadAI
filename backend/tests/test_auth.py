@@ -5,11 +5,12 @@ Test auth endpoints.
 from unittest.mock import patch
 
 import pytest
+from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
+
 from app.db.models.user import User
 from app.utils.access_token import decode_token
 from app.web.main import app
-from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
 
 client = TestClient(app)
 

@@ -2,11 +2,12 @@
 Authentication API endpoints.
 """
 
+from fastapi import APIRouter, Depends, HTTPException
+
 from app.db.repos.user import UserRepository
 from app.utils.access_token import create_access_token
 from app.utils.telegram_login import verify_telegram_login
 from app.web.depends import get_repo
-from fastapi import APIRouter, Depends, HTTPException
 
 from .shemas.user import LoginData, LoginResponse, UserSchema
 

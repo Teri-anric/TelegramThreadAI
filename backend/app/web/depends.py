@@ -2,9 +2,10 @@
 Dependency functions for the backend.
 """
 
+from fastapi import Depends
+
 from app.db.conn import get_async_session
 from app.db.repos import BaseRepository
-from fastapi import Depends
 
 
 def get_repo(repo_type: type[BaseRepository], *args, **kwargs):
