@@ -1,8 +1,16 @@
-from sqlalchemy import Column, Integer, String
+"""
+User model.
+"""
+
 from app.db.models.base import Base
+from sqlalchemy import Column, Integer, String
 
 
 class User(Base):
+    """
+    Database user model (information about the user from Telegram).
+    """
+
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)

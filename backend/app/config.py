@@ -1,5 +1,10 @@
+"""
+Configuration file.
+"""
+
 import os
 import secrets
+
 from dotenv import load_dotenv
 from sqlalchemy.engine.url import URL
 
@@ -27,4 +32,6 @@ DATABASE_URL = URL.create(
 # JWT Configuration
 SECRET_KEY = os.getenv("SECRET_KEY") or secrets.token_urlsafe(32)
 ALGORITHM = os.getenv("ALGORITHM") or "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES") or 60 * 24 * 7) # 7 days
+ACCESS_TOKEN_EXPIRE_MINUTES = int(
+    os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES") or 60 * 24 * 7
+)  # 7 days

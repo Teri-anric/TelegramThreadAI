@@ -1,12 +1,17 @@
-from sqlalchemy import Column, DateTime
-from sqlalchemy.sql import func
+"""
+Module for the base model.
+"""
 
-from sqlalchemy import Column, MetaData
+from sqlalchemy import Column, DateTime, MetaData
 from sqlalchemy.orm import DeclarativeBase
-
+from sqlalchemy.sql import func
 
 
 class Base(DeclarativeBase):
+    """
+    Base model for all database models.
+    """
+
     metadata = MetaData()
 
     # Timestamps

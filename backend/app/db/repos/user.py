@@ -1,10 +1,20 @@
+"""
+User repository module.
+"""
+
 from typing import Optional
+
 from sqlalchemy.future import select
+
 from ..models import User
 from .base import BaseRepository
 
 
 class UserRepository(BaseRepository):
+    """
+    User repository (CRUD operations for the user models).
+    """
+
     async def create_user(
         self,
         telegram_id: int,
@@ -51,13 +61,17 @@ class UserRepository(BaseRepository):
             await self.db.refresh(existing_user)
             return existing_user
 
-        return await self.create_user(telegram_id, first_name, last_name, username, photo_url)
+        return await self.create_user(
+            telegram_id, first_name, last_name, username, photo_url
+        )
 
     async def get_user_by_telegram_id(self, telegram_id: int) -> Optional[User]:
         """
         Get a user by Telegram ID
         """
-        result = await self.db.execute(select(User).filter(User.telegram_id == telegram_id))
+        result = await self.db.execute(
+            select(User).filter(User.telegram_id == telegram_id)
+        )
         return result.scalar_one_or_none()
 
     async def get_user_by_id(self, user_id: int) -> Optional[User]:

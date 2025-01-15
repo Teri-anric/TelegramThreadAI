@@ -1,9 +1,12 @@
-from fastapi import WebSocket, APIRouter
+"""
+Chat API endpoints.
+"""
+
+from fastapi import APIRouter, WebSocket
 
 router = APIRouter(
     tags=["Chat"],
 )
-
 
 
 @router.websocket("/chat/{chat_id}/ws")

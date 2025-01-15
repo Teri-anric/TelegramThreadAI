@@ -1,10 +1,13 @@
-from datetime import datetime, timedelta, UTC
+"""
+Access token utilities.
+"""
+
+from datetime import UTC, datetime, timedelta
 from typing import Optional
 
-from fastapi import HTTPException, status
-
-from app.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
 import jwt
+from app.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
+from fastapi import HTTPException, status
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -12,15 +15,14 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     Create a JWT access token
     """
     to_encode = data.copy()
-    
+
     if not expires_delta:
         expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     expire = datetime.now(UTC) + expires_delta
-    
+
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
-
 
 
 def decode_token(token: str):

@@ -1,9 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+"""
+Authentication API endpoints.
+"""
 
 from app.db.repos.user import UserRepository
 from app.utils.access_token import create_access_token
 from app.utils.telegram_login import verify_telegram_login
 from app.web.depends import get_repo
+from fastapi import APIRouter, Depends, HTTPException
 
 from .shemas.user import LoginData, LoginResponse, UserSchema
 
@@ -22,7 +25,7 @@ async def login(
     """
     if login_data.login_type != "tg_login_widget":
         raise HTTPException(status_code=400, detail="Invalid login type")
-    
+
     if not verify_telegram_login(login_data.credentials.model_dump()):
         raise HTTPException(status_code=400, detail="Invalid Telegram login data")
 
