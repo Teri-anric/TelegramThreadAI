@@ -9,11 +9,15 @@ import jwt
 from fastapi import HTTPException, status
 
 from app.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
+from app.db.models.user import User
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     """
     Create a JWT access token
+
+    :param data: The data to encode in the token
+    :param expires_delta: Optional time delta for token expiration
     """
     to_encode = data.copy()
 
@@ -26,9 +30,12 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 
-def decode_token(token: str):
+def decode_token(token: str) -> dict:
     """
     Decode and validate a JWT token
+
+    :param token: The JWT token to decode
+    :return: The decoded payload
     """
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])

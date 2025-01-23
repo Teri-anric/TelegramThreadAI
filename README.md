@@ -6,7 +6,20 @@ TelegramThreadAI is a platform designed to enhance user connectivity on Telegram
 ## 🌟 Features
 - 🧠 AI-enhanced Telegram thread management
 - 📊 Intelligent conversation context tracking
+- 🤝 Group chat creation and management
+- 🔒 Role-based access control
+- 🤖 Configurable AI interaction triggers
 - 🐳 Docker containerization
+
+## 🚀 Chat Features
+- Create public and private group chats
+- Customize AI chat instructions
+- Set AI response triggers:
+  - Respond after specific message count
+  - Respond after time interval
+  - Quick @ai mention responses
+- Invite and manage chat members
+- Admin-level chat management
 
 ## 🛠 Technology Stack
 - **Backend**: 
@@ -88,6 +101,5 @@ Project is distributed under MIT License - details in [LICENSE](LICENSE)
 
 ## 🔗 Useful Links
 - [Issue Tracker](https://github.com/yourusername/TelegramThreadAI/issues)
-
 
 **⭐ Don't forget to star the project!** 

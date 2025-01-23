@@ -4,6 +4,7 @@ User repository module.
 
 from typing import Optional
 
+from sqlalchemy import UUID
 from sqlalchemy.future import select
 
 from ..models import User
@@ -24,7 +25,13 @@ class UserRepository(BaseRepository):
         photo_url: str = None,
     ) -> User:
         """
-        Create a new user in the database
+        Create a new user in the database.
+
+        :param telegram_id: The Telegram ID of the user.
+        :param first_name: The first name of the user.
+        :param last_name: The last name of the user.
+        :param username: The username of the user.
+        :param photo_url: The photo URL of the user.
         """
         new_user = User(
             telegram_id=telegram_id,
@@ -47,7 +54,13 @@ class UserRepository(BaseRepository):
         photo_url: str = None,
     ) -> User:
         """
-        Create or update a user in the database
+        Create or update a user in the database.
+
+        :param telegram_id: The Telegram ID of the user.
+        :param first_name: The first name of the user.
+        :param last_name: The last name of the user.
+        :param username: The username of the user.
+        :param photo_url: The photo URL of the user.
         """
         existing_user = await self.get_user_by_telegram_id(telegram_id)
 
@@ -67,16 +80,20 @@ class UserRepository(BaseRepository):
 
     async def get_user_by_telegram_id(self, telegram_id: int) -> Optional[User]:
         """
-        Get a user by Telegram ID
+        Get a user by Telegram ID.
+
+        :param telegram_id: The Telegram ID of the user.
         """
         result = await self.db.execute(
             select(User).filter(User.telegram_id == telegram_id)
         )
         return result.scalar_one_or_none()
 
-    async def get_user_by_id(self, user_id: int) -> Optional[User]:
+    async def get_user_by_id(self, user_id: UUID) -> Optional[User]:
         """
-        Get a user by internal ID
+        Get a user by internal ID.
+
+        :param user_id: The internal ID of the user.
         """
         result = await self.db.execute(select(User).filter(User.id == user_id))
         return result.scalar_one_or_none()
