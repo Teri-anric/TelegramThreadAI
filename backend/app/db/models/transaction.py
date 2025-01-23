@@ -1,5 +1,12 @@
-from sqlalchemy import Column, Integer, ForeignKey, UUID
-import uuid
+"""
+Database model for financial transactions.
+
+This module defines the SQLAlchemy model for representing
+financial transactions in the application's database schema.
+"""
+
+from sqlalchemy import UUID, Column, ForeignKey, Integer
+
 from app.db.models.base import Base
 
 
@@ -11,7 +18,7 @@ class Transaction(Base):
     __tablename__ = "transactions"
 
     id = Column(UUID, primary_key=True, index=True, default=uuid.uuid4)
-    
+
     source_wallet_id = Column(UUID, ForeignKey("wallets.id"), nullable=False)
     destination_wallet_id = Column(UUID, ForeignKey("wallets.id"), nullable=False)
 

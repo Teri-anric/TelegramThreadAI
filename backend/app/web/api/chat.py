@@ -1,19 +1,24 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+"""
+Chat API endpoints.
+
+This module provides API routes for managing chat-related operations,
+including creating, updating, and retrieving chat information.
+"""
+
 from uuid import UUID
 
-from app.db.repos.chat import ChatRepository
+from fastapi import APIRouter, Depends, HTTPException, status
+
+from app.db.models.chat_member import ChatMemberStatus
 from app.db.models.user import User
+from app.db.repos.chat import ChatRepository
+from app.db.repos.chat_member import ChatMemberRepository
 from app.db.repos.exptions import ChatUsernameAlreadyExistsException
 from app.web.api.shemas.api import ApiResponse
-from app.db.models.chat_member import ChatMemberStatus
-from app.db.repos.chat_member import ChatMemberRepository
+
 from ..depends import get_current_user, get_repo
-from .shemas.chat import (
-    ChatCreateRequest,
-    ChatCreateResponse,
-    ChatUpdateRequest,
-    ChatResponse,
-)
+from .shemas.chat import (ChatCreateRequest, ChatCreateResponse, ChatResponse,
+                          ChatUpdateRequest)
 
 chat_router = APIRouter(prefix="/chats", tags=["chats"])
 
@@ -50,8 +55,7 @@ async def create_chat(
 
 @chat_router.get("/{chat_id}", response_model=ChatResponse)
 async def get_chat(
-    chat_id: UUID,
-    chat_repo: ChatRepository = Depends(get_repo(ChatRepository))
+    chat_id: UUID, chat_repo: ChatRepository = Depends(get_repo(ChatRepository))
 ):
     """Retrieve a chat by its ID.
 
@@ -64,7 +68,9 @@ async def get_chat(
     """
     chat = await chat_repo.get_chat_by_id(chat_id)
     if not chat:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Chat not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Chat not found"
+        )
 
     return ChatResponse.model_validate(chat)
 
@@ -84,7 +90,9 @@ async def get_chat_by_username(
     """
     chat = await chat_repo.get_chat_by_username(username)
     if not chat:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Chat not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Chat not found"
+        )
 
     return ChatResponse.model_validate(chat)
 
@@ -117,7 +125,7 @@ async def update_chat(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
             detail="You are not an admin of this chat",
         )
-    try:    
+    try:
         is_updated = await chat_repo.update_chat(
             chat_id=chat_id,
             title=chat_data.title,

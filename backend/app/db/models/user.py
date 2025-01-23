@@ -3,7 +3,8 @@ User model.
 """
 
 import uuid
-from sqlalchemy import Column, Integer, String, UUID
+
+from sqlalchemy import UUID, Column, Integer, String
 
 from app.db.models.base import Base
 

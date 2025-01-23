@@ -1,5 +1,14 @@
-from sqlalchemy import Column, Integer, ForeignKey, Numeric, UUID
+"""
+Database model for currency exchange rates.
+
+This module defines the SQLAlchemy model for representing
+currency exchange rates in the application's database schema.
+"""
+
 import uuid
+
+from sqlalchemy import UUID, Column, ForeignKey, Numeric
+
 from app.db.models.base import Base
 
 

@@ -1,18 +1,19 @@
-from app.db.models.chat_member import ChatMember
-from app.db.repos.base import BaseRepository
+"""
+Chat member repository module for managing chat member-related database operations.
 
-import secrets
-from typing import List, Optional, Union
+This module provides functionality to create, update, and retrieve
+chat member information, handling various statuses and interactions
+within chat groups.
+"""
+
+from typing import List, Optional
 from uuid import UUID
 
-from sqlalchemy.future import select
-from sqlalchemy.orm import selectinload
-from sqlalchemy import delete, update
+from sqlalchemy import update
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.future import select
 
-from app.db.models.chat import Chat, ChatType
 from app.db.models.chat_member import ChatMember, ChatMemberStatus
-from app.db.models.user import User
 from app.db.repos.base import BaseRepository
 
 
@@ -60,7 +61,7 @@ class ChatMemberRepository(BaseRepository):
         """
         if not isinstance(old_status, list):
             old_status = [old_status]
-        
+
         result = await self.db.execute(
             update(ChatMember)
             .where(
@@ -165,11 +166,12 @@ class ChatMemberRepository(BaseRepository):
             old_status=[ChatMemberStatus.MEMBER, ChatMemberStatus.ADMIN],
             new_status=ChatMemberStatus.BANNED,
         )
-    
 
     # ### Getters ###
 
-    async def get_chat_member(self, chat_id: UUID, user_id: UUID) -> Optional[ChatMember]:
+    async def get_chat_member(
+        self, chat_id: UUID, user_id: UUID
+    ) -> Optional[ChatMember]:
         """
         Get a chat member, user in a chat.
 
@@ -178,8 +180,9 @@ class ChatMemberRepository(BaseRepository):
         :return: The chat member if found, None otherwise.
         """
         result = await self.db.execute(
-            select(ChatMember)
-            .where(ChatMember.chat_id == chat_id, ChatMember.user_id == user_id)
+            select(ChatMember).where(
+                ChatMember.chat_id == chat_id, ChatMember.user_id == user_id
+            )
         )
         return result.scalar_one_or_none()
 
@@ -194,9 +197,9 @@ class ChatMemberRepository(BaseRepository):
         :return: A list of chat members with the specified status.
         """
         result = await self.db.execute(
-            select(ChatMember)
-            .where(ChatMember.chat_id == chat_id, ChatMember.status == status)
-            .options(selectinload(ChatMember.user))
+            select(ChatMember).where(
+                ChatMember.chat_id == chat_id, ChatMember.status == status
+            )
         )
         return result.scalars().all()
 

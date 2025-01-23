@@ -1,3 +1,10 @@
+"""
+Pydantic schemas for login-related data models.
+
+This module defines Pydantic models used for validating
+and serializing login-related data in the authentication process.
+"""
+
 from typing import Literal, Union
 
 from pydantic import BaseModel, ConfigDict, Field

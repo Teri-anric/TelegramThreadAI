@@ -1,6 +1,15 @@
-from pydantic import BaseModel, ConfigDict, Field
-from uuid import UUID
+"""
+Pydantic schemas for chat-related data models.
+
+This module defines Pydantic models used for validating
+and serializing chat-related data in the application.
+"""
+
 from typing import Optional
+from uuid import UUID
+
+from pydantic import BaseModel, ConfigDict, Field
+
 from app.db.models.chat import ChatType
 from app.web.api.shemas.api import ApiResponse
 

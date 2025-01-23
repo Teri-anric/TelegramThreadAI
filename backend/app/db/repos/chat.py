@@ -2,15 +2,15 @@
 Chat repository module for managing chat-related database operations.
 """
 
-from contextlib import suppress
 import secrets
+from contextlib import suppress
 from typing import Optional
 from uuid import UUID
 
-from sqlalchemy.future import select
 from sqlalchemy import delete, update
-from sqlalchemy.orm import selectinload
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.future import select
+
 from app.db.models.chat import Chat, ChatType
 from app.db.models.chat_member import ChatMember, ChatMemberStatus
 from app.db.repos.base import BaseRepository
@@ -29,9 +29,7 @@ class ChatRepository(BaseRepository):
         :param chat_id: The ID of the chat.
         :return: The chat if found, None otherwise.
         """
-        result = await self.db.execute(
-            select(Chat).where(Chat.id == chat_id)
-        )
+        result = await self.db.execute(select(Chat).where(Chat.id == chat_id))
         return result.scalar_one_or_none()
 
     async def get_chat_by_username(self, username: str) -> Optional[Chat]:
@@ -41,10 +39,7 @@ class ChatRepository(BaseRepository):
         :param username: The username of the chat.
         :return: The chat if found, None otherwise.
         """
-        result = await self.db.execute(
-            select(Chat)
-            .where(Chat.username == username)
-        )
+        result = await self.db.execute(select(Chat).where(Chat.username == username))
         return result.scalar_one_or_none()
 
     async def create_chat(
@@ -87,7 +82,7 @@ class ChatRepository(BaseRepository):
         except IntegrityError:
             await self.db.rollback()
             raise ChatUsernameAlreadyExistsException()
-        
+
         owner_chat_member = ChatMember(
             chat_id=new_chat.id, user_id=owner_id, status=ChatMemberStatus.OWNER
         )
@@ -95,7 +90,6 @@ class ChatRepository(BaseRepository):
         await self.db.commit()
 
         return new_chat
-    
 
     async def update_chat(
         self,
@@ -137,7 +131,7 @@ class ChatRepository(BaseRepository):
 
         :param chat_id: The ID of the chat.
         :param avatar_url: The new avatar URL.
-        
+
         :return: True if the avatar was updated successfully, False otherwise.
         """
         result = await self.db.execute(

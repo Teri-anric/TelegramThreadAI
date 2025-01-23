@@ -1,17 +1,26 @@
+"""
+Database model for user wallets.
+
+This module defines the SQLAlchemy model for representing
+user wallet information in the application's database schema.
+"""
+
 import enum
 import uuid
-from sqlalchemy import UUID, Column, ForeignKey, Integer, Enum
+
+from sqlalchemy import UUID, Column, Enum, ForeignKey, Integer
 
 from app.db.models.base import Base
 
 
 class WalletType(enum.Enum):
     """Enum for wallet type."""
+
     EXTERNAL = "external"
     INTERNAL = "internal"
 
 
-class Wallet(Base): 
+class Wallet(Base):
     """
     Database model for user wallets.
     NOT RELATED TO USER CHAT AND OTHER MODELS

@@ -3,13 +3,12 @@ Dependency functions for the backend.
 """
 
 from fastapi import Depends, HTTPException, Request
-from fastapi.security import OAuth2PasswordBearer
 
 from app.db.conn import get_async_session
-from app.db.repos import BaseRepository
 from app.db.models.user import User
-from app.utils.access_token import decode_token
+from app.db.repos import BaseRepository
 from app.db.repos.user import UserRepository
+from app.utils.access_token import decode_token
 
 
 def get_repo(repo_type: type[BaseRepository], *args, **kwargs):
@@ -27,7 +26,9 @@ def get_repo(repo_type: type[BaseRepository], *args, **kwargs):
     return get_repo_func
 
 
-async def get_current_user(request: Request, user_repo: UserRepository = Depends(get_repo(UserRepository))) -> User:
+async def get_current_user(
+    request: Request, user_repo: UserRepository = Depends(get_repo(UserRepository))
+) -> User:
     """
     Get the current user from the request.
     """
@@ -49,5 +50,5 @@ async def get_current_user(request: Request, user_repo: UserRepository = Depends
     user = await user_repo.get_user_by_id(user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    
+
     return user

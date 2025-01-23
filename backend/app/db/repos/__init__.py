@@ -3,7 +3,7 @@ Database repositories module.
 """
 
 from .base import BaseRepository
-from .user import UserRepository
 from .chat import ChatRepository
+from .user import UserRepository
 
 __all__ = ["BaseRepository", "UserRepository", "ChatRepository"]

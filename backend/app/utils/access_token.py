@@ -9,7 +9,6 @@ import jwt
 from fastapi import HTTPException, status
 
 from app.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
-from app.db.models.user import User
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):

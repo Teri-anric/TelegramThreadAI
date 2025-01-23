@@ -1,5 +1,14 @@
+"""
+Database model for currencies.
+
+This module defines the SQLAlchemy model for representing
+currency information in the application's database schema.
+"""
+
 import uuid
-from sqlalchemy import Column, String, UUID, Integer
+
+from sqlalchemy import UUID, Column, Integer, String
+
 from app.db.models.base import Base
 
 
