@@ -1,4 +1,4 @@
-import { api } from "../services/api";
+import { authService } from "../services/api";
 import { useDispatch } from "react-redux";
 import { setUserData, removeUserData } from "../store/userData";
 
@@ -19,7 +19,7 @@ export const useTelegramLogin = () => {
     },
 
     auth: async function(user) {
-      const data = await api.login(user);
+      const data = await authService.loginByTelegramWidget(user);
       if (data.status === 200) {
         dispatch(setUserData(data));
         console.log("Login successful");

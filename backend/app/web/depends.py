@@ -9,6 +9,7 @@ from app.db.models.user import User
 from app.db.repos import BaseRepository
 from app.db.repos.user import UserRepository
 from app.utils.access_token import decode_token
+from app.web.security import oauth2_scheme
 
 
 def get_repo(repo_type: type[BaseRepository], *args, **kwargs):
@@ -20,35 +21,30 @@ def get_repo(repo_type: type[BaseRepository], *args, **kwargs):
         """
         Create a repository instance.
         """
-        session = get_async_session()
-        return repo_type(session, *args, **kwargs)
+        with get_async_session() as session:
+            yield repo_type(session, *args, **kwargs)
 
     return get_repo_func
+    
 
-
-async def get_current_user(
-    request: Request, user_repo: UserRepository = Depends(get_repo(UserRepository))
-) -> User:
+async def get_current_user_or_none(
+    token: str = Depends(oauth2_scheme),
+    user_repo: UserRepository = Depends(get_repo(UserRepository)),
+) -> User | None:
     """
     Get the current user from the request.
     """
-    # Get the token from the request
-    token = request.headers.get("Authorization") or request.cookies.get("access_token")
-    if not token:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-    # check shema
-    if not token.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Invalid token format")
-    # Remove the "Bearer " prefix
-    token = token.removeprefix("Bearer ")
-    if not token:
-        raise HTTPException(status_code=401, detail="Token is empty")
     # Decode the token
-    payload = decode_token(token)
+    payload = decode_token(token)   
     user_id = payload["sub"]
     # Get the user by id
-    user = await user_repo.get_user_by_id(user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+    return await user_repo.get_user_by_id(user_id)
 
+
+async def get_current_user(user: User | None = Depends(get_current_user_or_none)) -> User:
+    """
+    Get the current user from the request.
+    """
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
     return user

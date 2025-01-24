@@ -2,6 +2,7 @@
 Database connection module.
 """
 
+from functools import cache
 from sqlalchemy.ext.asyncio import (AsyncEngine, AsyncSession,
                                     async_sessionmaker, create_async_engine)
 
@@ -14,8 +15,8 @@ def get_async_engine(url: str = DATABASE_URL) -> AsyncEngine:
     """
     return create_async_engine(url)
 
-
-async def get_async_session(engine=None) -> AsyncSession:
+@cache
+def get_async_session_maker(engine: AsyncEngine | None = None) -> async_sessionmaker:
     """
     Get an async session for the database.
     """
@@ -26,4 +27,12 @@ async def get_async_session(engine=None) -> AsyncSession:
         engine, expire_on_commit=False, class_=AsyncSession
     )
 
+    return async_session
+
+
+def get_async_session() -> AsyncSession:
+    """
+    Get an async session for the database.
+    """
+    async_session = get_async_session_maker()
     return async_session()
