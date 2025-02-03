@@ -1,10 +1,8 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:16.1
     env_file:
-      - .env
+      - .env.dev
     environment:
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-ttai_password}
       - POSTGRES_USER=${DATABASE_USER:-ttai_user}
@@ -20,18 +18,18 @@ services:
       timeout: 5s
       retries: 5
   
-  backend:
+  backend-dev:
     build: 
       context: ./backend
       dockerfile: Dockerfile.dev
     env_file:
-      - .env
+      - .env.dev
     command: uvicorn app.web:app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8000:8000"
     volumes:
       - ./backend:/app
-      - /app/.venv  # Prevent host volume overwriting virtual environment
+      - /app/.venv
     depends_on:
       db:
         condition: service_healthy
@@ -43,19 +41,19 @@ services:
         - action: rebuild
           path: ./backend/requirements.txt
   
-  frontend:
+  frontend-dev:
     build: 
       context: ./frontend
       dockerfile: Dockerfile.dev
     env_file:
-      - .env
+      - .env.dev
     ports:
       - "3000:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules
     depends_on:
-      - backend
+      - backend-dev
     develop:
       watch:
         - action: sync
@@ -64,5 +62,10 @@ services:
         - action: rebuild
           path: ./frontend/package.json
 
+
 volumes:
-  pg_data: 
+  pg_data:
+
+networks:
+  backend_network:
+    driver: bridge 
