@@ -1,3 +1,4 @@
+version: '3.8'
 
 services:
   db:
@@ -9,8 +10,8 @@ services:
       - POSTGRES_USER=${DATABASE_USER:-ttai_user}
       - POSTGRES_DB=${DATABASE_NAME:-ttai_db}
       - POSTGRES_PORT=${DATABASE_PORT:-5432}
-    expose:
-      - ${DATABASE_PORT:-5432}
+    ports:
+      - "${DATABASE_PORT:-5432}:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
@@ -20,36 +21,48 @@ services:
       retries: 5
   
   backend:
-    build: ./backend
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.dev
     env_file:
       - .env
-    command: uvicorn app.web:app --host 0.0.0.0 --port 8000
+    command: uvicorn app.web:app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8000:8000"
     volumes:
       - ./backend:/app
+      - /app/.venv  # Prevent host volume overwriting virtual environment
     depends_on:
       db:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
+    develop:
+      watch:
+        - action: sync
+          path: ./backend
+          target: /app
+        - action: rebuild
+          path: ./backend/requirements.txt
   
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile.dev
     env_file:
       - .env
     ports:
-      - "80:80"
-      - "443:443"
+      - "3000:3000"
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend/src
+          target: /app/src
+        - action: rebuild
+          path: ./frontend/package.json
 
 volumes:
-  pg_data:
+  pg_data: 

@@ -12,6 +12,10 @@ down:
 run:
 	docker compose up
 
+# Create migrations
+migrate:
+	docker compose exec backend alembic revision --autogenerate -m "init migration"
+
 # Backend code check
 lint:
 	cd backend && pylint app tests --disable=all --enable=C0114,C0115,C0116,C0411,W0611,W1201,W0401,W0231
