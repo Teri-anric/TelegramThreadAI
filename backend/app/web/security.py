@@ -1,7 +1,8 @@
 from typing import Coroutine
+
 from fastapi import HTTPException, Request
-from starlette.status import HTTP_403_FORBIDDEN
 from fastapi.security import APIKeyHeader
+from starlette.status import HTTP_403_FORBIDDEN
 
 
 class APIKeyAuth(APIKeyHeader):

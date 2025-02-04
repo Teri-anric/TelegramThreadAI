@@ -25,7 +25,7 @@ def get_repo(repo_type: type[BaseRepository], *args, **kwargs):
             yield repo_type(session, *args, **kwargs)
 
     return get_repo_func
-    
+
 
 async def get_current_user_or_none(
     token: str = Depends(oauth2_scheme),
@@ -35,13 +35,15 @@ async def get_current_user_or_none(
     Get the current user from the request.
     """
     # Decode the token
-    payload = decode_token(token)   
+    payload = decode_token(token)
     user_id = payload["sub"]
     # Get the user by id
     return await user_repo.get_user_by_id(user_id)
 
 
-async def get_current_user(user: User | None = Depends(get_current_user_or_none)) -> User:
+async def get_current_user(
+    user: User | None = Depends(get_current_user_or_none),
+) -> User:
     """
     Get the current user from the request.
     """
