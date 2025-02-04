@@ -6,7 +6,7 @@ import hashlib
 import hmac
 from typing import Any, Dict
 
-from app.config import BOT_TOKEN
+from app.config import settings
 
 
 def verify_telegram_login(data: Dict[str, Any]) -> bool:
@@ -32,7 +32,7 @@ def verify_telegram_login(data: Dict[str, Any]) -> bool:
     data_check_string = "\n".join([f"{k}={check_data[k]}" for k in sorted_keys])
 
     # Create secret key (SHA256 hash of bot token)
-    secret_key = hashlib.sha256(BOT_TOKEN.encode()).digest()
+    secret_key = hashlib.sha256(settings.bot_token.encode()).digest()
 
     # Create HMAC signature
     signature = hmac.new(

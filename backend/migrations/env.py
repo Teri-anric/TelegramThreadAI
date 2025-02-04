@@ -6,7 +6,7 @@ import asyncio
 from logging.config import fileConfig
 
 from alembic import context
-from app.config import DATABASE_URL
+from app.config import settings
 from app.db.models import Base
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
@@ -27,7 +27,7 @@ target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
-config.set_main_option("sqlalchemy.url", DATABASE_URL)
+config.set_main_option("sqlalchemy.url", settings.database.url)
 # ... etc.
 
 

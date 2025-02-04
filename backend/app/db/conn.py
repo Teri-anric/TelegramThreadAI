@@ -6,10 +6,10 @@ from functools import cache
 from sqlalchemy.ext.asyncio import (AsyncEngine, AsyncSession,
                                     async_sessionmaker, create_async_engine)
 
-from app.config import DATABASE_URL
+from app.config import settings
 
 
-def get_async_engine(url: str = DATABASE_URL) -> AsyncEngine:
+def get_async_engine(url: str = settings.database.url) -> AsyncEngine:
     """
     Get an async engine for the database.
     """
