@@ -1,3 +1,7 @@
+"""
+Package for Telegram bot message and command handlers.
+"""
+
 from aiogram import Router
 
 from .commands import router as commands_router

@@ -25,7 +25,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     expire = datetime.now(UTC) + expires_delta
 
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, settings.jwt.secret_key, algorithm=settings.jwt.algorithm)
+    encoded_jwt = jwt.encode(
+        to_encode, settings.jwt.secret_key, algorithm=settings.jwt.algorithm
+    )
     return encoded_jwt
 
 
@@ -37,7 +39,9 @@ def decode_token(token: str) -> dict:
     :return: The decoded payload
     """
     try:
-        payload = jwt.decode(token, settings.jwt.secret_key, algorithms=[settings.jwt.algorithm])
+        payload = jwt.decode(
+            token, settings.jwt.secret_key, algorithms=[settings.jwt.algorithm]
+        )
         return payload
     except jwt.ExpiredSignatureError:
         raise HTTPException(

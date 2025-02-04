@@ -3,6 +3,7 @@ Database connection module.
 """
 
 from functools import cache
+
 from sqlalchemy.ext.asyncio import (AsyncEngine, AsyncSession,
                                     async_sessionmaker, create_async_engine)
 
@@ -14,6 +15,7 @@ def get_async_engine(url: str = settings.database.url) -> AsyncEngine:
     Get an async engine for the database.
     """
     return create_async_engine(url)
+
 
 @cache
 def get_async_session_maker(engine: AsyncEngine | None = None) -> async_sessionmaker:

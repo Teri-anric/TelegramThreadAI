@@ -1,3 +1,7 @@
+"""
+Middleware for database-related operations in the Telegram bot.
+"""
+
 from typing import Any, Awaitable, Callable, Dict
 
 from aiogram import BaseMiddleware
@@ -8,6 +12,10 @@ from app.db.conn import get_async_session
 
 
 class DatabaseMiddleware(BaseMiddleware):
+    """
+    Middleware to manage database connections and sessions for bot interactions.
+    """
+
     async def __call__(
         self,
         handler: Callable[[Message, Dict[str, Any]], Awaitable[Any]],

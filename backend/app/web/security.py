@@ -1,4 +1,6 @@
-from typing import Coroutine
+"""
+Security-related utilities and functions for the web application.
+"""
 
 from fastapi import HTTPException, Request
 from fastapi.security import APIKeyHeader
@@ -23,6 +25,9 @@ class APIKeyAuth(APIKeyHeader):
         self.name_in_query = name_in_query
 
     def get_api_key(self, request: Request):
+        """
+        Get the API key from the request.
+        """
         api_key = request.headers.get(self.model.name)
         if not api_key and self.name_in_cookie:
             api_key = request.cookies.get(self.name_in_cookie)
@@ -31,6 +36,9 @@ class APIKeyAuth(APIKeyHeader):
         return api_key
 
     def __call__(self, request: Request):
+        """
+        Authenticate the request.
+        """
         api_key = self.get_api_key(request)
         if not api_key:
             if self.auto_error:

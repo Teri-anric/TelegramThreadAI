@@ -2,7 +2,7 @@
 Dependency functions for the backend.
 """
 
-from fastapi import Depends, HTTPException, Request
+from fastapi import Depends, HTTPException
 
 from app.db.conn import get_async_session
 from app.db.models.user import User

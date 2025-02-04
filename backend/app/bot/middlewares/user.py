@@ -1,3 +1,7 @@
+"""
+Middleware for handling user-related operations in the Telegram bot.
+"""
+
 from typing import Any, Awaitable, Callable, Dict
 
 from aiogram import BaseMiddleware
@@ -5,6 +9,10 @@ from aiogram.types import Message
 
 
 class UserMiddleware(BaseMiddleware):
+    """
+    Middleware to process and manage user-related context in bot interactions.
+    """
+
     async def __call__(
         self,
         handler: Callable[[Message, Dict[str, Any]], Awaitable[Any]],

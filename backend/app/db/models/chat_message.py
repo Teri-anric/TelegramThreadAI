@@ -3,9 +3,8 @@ Message model for storing chat messages.
 """
 
 import uuid
-from enum import Enum as PyEnum
 
-from sqlalchemy import UUID, Column, DateTime, Enum, ForeignKey, Text, func
+from sqlalchemy import UUID, Column, ForeignKey, Text
 from sqlalchemy.orm import relationship
 
 from app.db.models.base import Base

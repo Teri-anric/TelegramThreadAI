@@ -7,10 +7,9 @@ from uuid import UUID
 
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.repos.base import BaseRepository
-from backend.app.db.models.chat_message import ChatMessage, MessageSource
+from backend.app.db.models.chat_message import ChatMessage
 
 
 class MessageRepository(BaseRepository):

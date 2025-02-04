@@ -1,3 +1,7 @@
+"""
+Core module for Telegram bot initialization and configuration.
+"""
+
 from logging import getLogger
 
 from aiogram import Bot, Dispatcher

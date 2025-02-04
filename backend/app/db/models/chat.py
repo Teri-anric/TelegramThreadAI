@@ -5,7 +5,7 @@ Chat model for group chats with AI.
 import enum
 import uuid
 
-from sqlalchemy import UUID, Column, Enum, ForeignKey, String, BigInteger
+from sqlalchemy import UUID, BigInteger, Column, Enum, ForeignKey, String
 from sqlalchemy.orm import relationship
 
 from app.db.models.base import Base

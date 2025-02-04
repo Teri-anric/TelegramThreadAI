@@ -124,7 +124,9 @@ class MessageQueueService:
 
 
 async def main():
-    # Example usage
+    """
+    Example usage of the message queue service.
+    """
     mq_service = MessageQueueService()
 
     # Publishing a message

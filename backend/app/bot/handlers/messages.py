@@ -1,4 +1,6 @@
-from uuid import UUID
+"""
+Handlers for incoming messages from users.
+"""
 
 from aiogram import Router
 from aiogram.types import Message
@@ -17,6 +19,12 @@ async def echo_message(
     db_repos: DBReposContext,
     mq_service: MessageQueueService,
 ):
+    """
+    Process an incoming message from a user.
+
+    Args:
+        message (Message): The incoming Telegram message.
+    """
     chat = await db_repos.chat_repo.get_chat_by_telegram_id(message.chat.id)
 
     if chat:

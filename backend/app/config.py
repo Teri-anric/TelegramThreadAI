@@ -2,10 +2,10 @@
 Configuration management using Pydantic v2 settings.
 """
 
-from typing import Optional
 import secrets
 
-from pydantic import BaseModel, PostgresDsn, AmqpDsn, Field, ConfigDict, computed_field
+from pydantic import (AmqpDsn, BaseModel, ConfigDict, Field, PostgresDsn,
+                      computed_field)
 from pydantic_settings import BaseSettings
 
 
