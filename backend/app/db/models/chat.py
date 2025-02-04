@@ -45,3 +45,7 @@ class Chat(Base):
         uselist=False,
         cascade="all, delete-orphan",
     )
+
+    messages = relationship(
+        "Message", back_populates="chat", cascade="all, delete-orphan"
+    )
