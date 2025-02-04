@@ -5,7 +5,7 @@ Chat model for group chats with AI.
 import enum
 import uuid
 
-from sqlalchemy import UUID, Column, Enum, ForeignKey, String
+from sqlalchemy import UUID, Column, Enum, ForeignKey, String, BigInteger
 from sqlalchemy.orm import relationship
 
 from app.db.models.base import Base
@@ -16,6 +16,7 @@ class ChatType(enum.Enum):
 
     PUBLIC = "public"
     PRIVATE = "private"
+    TELEGRAM = "mirrored_telegram"
 
 
 class Chat(Base):
@@ -34,6 +35,8 @@ class Chat(Base):
 
     chat_type = Column(Enum(ChatType), default=ChatType.PUBLIC, nullable=False)
     owner_id = Column(UUID, ForeignKey("users.id"), nullable=False)
+
+    telegram_chat_id = Column(BigInteger, nullable=True, index=True)
 
     owner = relationship("User", back_populates="owned_chats")
     members = relationship("ChatMember", back_populates="chat")
