@@ -35,4 +35,4 @@ class ChatMember(Base):
     )
 
     chat = relationship("Chat", back_populates="members")
-    user = relationship("User", back_populates="chat_memberships")
+    # user = relationship("User", back_populates="chat_memberships")

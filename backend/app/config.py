@@ -3,32 +3,36 @@ Configuration management using Pydantic v2 settings.
 """
 
 import secrets
-
-from pydantic import (AmqpDsn, BaseModel, ConfigDict, Field, PostgresDsn,
-                      computed_field)
+import logging
+from typing import Any
+from sqlalchemy import URL
+from pydantic import (AmqpDsn, BaseModel, ConfigDict, Field,
+                      computed_field, field_validator)
 from pydantic_settings import BaseSettings
+
+logging.basicConfig(level=logging.INFO)
+
 
 
 class DatabaseSettings(BaseModel):
     """Database configuration settings."""
 
     host: str = Field("localhost")
-    port: str = Field("5432")
+    port: int = Field(5432)
     user: str = Field("postgres")
     password: str = Field("postgres")
     name: str = Field("postgres")
 
-    @computed_field
     @property
-    def url(self) -> PostgresDsn:
+    def url(self):
         """Construct the full database connection URL."""
-        return PostgresDsn.build(
-            scheme="postgresql+asyncpg",
+        return URL.create(
+            drivername="postgresql+asyncpg",
             username=self.user,
             password=self.password,
             host=self.host,
             port=self.port,
-            path=self.name,
+            database=self.name,
         )
 
 
@@ -38,7 +42,7 @@ class RabbitMQSettings(BaseModel):
     default_user: str = Field("guest")
     default_pass: str = Field("guest")
     host: str = Field("localhost")
-    port: str = Field("5672")
+    port: int = Field(5672)
     vhost: str = Field("/")
 
     @computed_field
@@ -77,12 +81,18 @@ class Settings(BaseSettings):
     )
 
     bot_token: str = Field("")
-    cors_origins: list[str] = Field([])
+    # can't usage list[str] because of pydantic settings
+    cors_origins: Any = Field("")  # type: list[str]  
 
     # Nested configuration models
     jwt: JWTSettings = JWTSettings()
     database: DatabaseSettings = DatabaseSettings()
     rabbitmq: RabbitMQSettings = RabbitMQSettings()
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def decode_cors_origins(cls, v: str) -> list[str]:
+        return [x.strip() for x in v.split(",")]
 
 
 # Create a singleton settings instance

@@ -28,8 +28,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app
-      - /app/.venv
+      - ./backend/app:/app/app
     depends_on:
       db:
         condition: service_healthy
@@ -40,6 +39,19 @@ services:
           target: /app
         - action: rebuild
           path: ./backend/requirements.txt
+  
+  bot-dev:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    env_file:
+      - .env.dev
+    command: python -m app.bot
+    volumes:
+      - ./backend/app:/app/app
+    depends_on:
+      db:
+        condition: service_healthy
   
   frontend-dev:
     build: 
@@ -63,7 +75,7 @@ services:
           path: ./frontend/package.json
 
   rabbitmq:
-    image: rabbitmq:3.12-management
+    image: rabbitmq:4.0-management
     ports:
       - "5672:5672"
       - "15672:15672"

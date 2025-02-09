@@ -38,7 +38,7 @@ class Chat(Base):
 
     telegram_chat_id = Column(BigInteger, nullable=True, index=True)
 
-    owner = relationship("User", back_populates="owned_chats")
+    owner = relationship("User")
     members = relationship("ChatMember", back_populates="chat")
     # chat_permissions = relationship("ChatPermission", back_populates="chat", uselist=False)
 
@@ -50,5 +50,5 @@ class Chat(Base):
     )
 
     messages = relationship(
-        "Message", back_populates="chat", cascade="all, delete-orphan"
+        "ChatMessage", back_populates="chat", cascade="all, delete-orphan"
     )

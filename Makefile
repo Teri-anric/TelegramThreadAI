@@ -1,20 +1,53 @@
 .PHONY: lint format test run-tests frontend-lint all clean up down run
 
 # Build project (run in background)
+build:
+	docker compose -p ttai build
+
+dev-build:
+	docker compose -f docker-compose.dev.yaml -p ttai-dev build
+
+# Run migrations
+upgrade:
+	docker compose -p ttai exec backend alembic upgrade head
+
+dev-upgrade:
+	docker compose -f docker-compose.dev.yaml -p ttai-dev exec backend-dev alembic upgrade head
+
+# Up project (run in background)
 up:
-	docker compose up --build -d
+	docker compose up -p ttai -d
+
+dev-up:
+	docker compose -f docker-compose.dev.yaml -p ttai-dev up -d
 
 # Stop project
 down:
-	docker compose down
+	docker compose -p ttai down
+
+dev-down:
+	docker compose -f docker-compose.dev.yaml -p ttai-dev down
 
 # Run project
 run:
-	docker compose up
+	docker compose -p ttai up
+
+dev-run:
+	docker compose -f docker-compose.dev.yaml -p ttai-dev up
+
+# Logs
+logs:
+	docker compose -p ttai logs
+
+dev-logs:
+	docker compose -f docker-compose.dev.yaml -p ttai-dev logs
 
 # Create migrations
 migrate:
-	docker compose exec backend alembic revision --autogenerate -m "init migration"
+	docker compose -p ttai exec backend alembic revision --autogenerate -m "init migration"
+
+dev-migrate:
+	docker compose -f docker-compose.dev.yaml -p ttai-dev exec backend-dev alembic revision --autogenerate -m "init migration"
 
 # Backend code check
 lint:
@@ -33,7 +66,7 @@ format: format-black format-imports
 
 # Run tests in Docker
 test:
-	docker compose -f docker-compose.test.yml up --build backend
+	docker compose -f docker-compose.test.yml -p ttai-test up --build backend
 
 # Frontend check
 frontend-lint:
