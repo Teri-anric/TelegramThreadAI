@@ -1,8 +1,7 @@
 """
-Chat API endpoints.
+Chat API CRUD endpoints.
 
-This module provides API routes for managing chat-related operations,
-including creating, updating, and retrieving chat information.
+This module provides CRUD endpoints for managing chat-related operations.
 """
 
 from uuid import UUID
@@ -14,16 +13,19 @@ from app.db.models.user import User
 from app.db.repos.chat import ChatRepository
 from app.db.repos.chat_member import ChatMemberRepository
 from app.db.repos.exptions import ChatUsernameAlreadyExistsException
-from app.web.api.shemas.api import ApiResponse
+from app.web.shemas.api import ApiResponse
 
-from ..depends import get_current_user, get_repo
-from .shemas.chat import (ChatCreateRequest, ChatCreateResponse, ChatResponse,
-                          ChatUpdateRequest)
+from app.web.depends import get_current_user, get_repo
+from app.web.shemas.chat import (
+    ChatCreateRequest,
+    ChatCreateResponse,
+    ChatResponse,
+    ChatUpdateRequest
+)
 
-chat_router = APIRouter(prefix="/chats", tags=["Chats"])
+chat_crud_router = APIRouter(tags=["Chats"])            
 
-
-@chat_router.post(
+@chat_crud_router.post(
     "/",
     response_model=ChatCreateResponse,
     summary="Create a new chat",
@@ -71,7 +73,7 @@ async def create_chat(
         )
 
 
-@chat_router.get(
+@chat_crud_router.get(
     "/{chat_id}",
     response_model=ChatResponse,
     summary="Get chat by ID",
@@ -102,7 +104,7 @@ async def get_chat(
     return ChatResponse.model_validate(chat)
 
 
-@chat_router.get(
+@chat_crud_router.get(
     "/u/{username}",
     response_model=ChatResponse,
     summary="Get chat by username",
@@ -131,7 +133,7 @@ async def get_chat_by_username(
     return ChatResponse.model_validate(chat)
 
 
-@chat_router.put(
+@chat_crud_router.put(
     "/{chat_id}",
     response_model=ApiResponse,
     summary="Update chat details",
@@ -191,7 +193,7 @@ async def update_chat(
     return ApiResponse(status="ok", message="Chat updated successfully")
 
 
-@chat_router.delete(
+@chat_crud_router.delete(
     "/{chat_id}",
     response_model=ApiResponse,
     summary="Delete a chat",
@@ -227,3 +229,4 @@ async def delete_chat(
     await chat_repo.delete_chat(chat_id)
 
     return ApiResponse(status="ok", message="Chat deleted successfully")
+
