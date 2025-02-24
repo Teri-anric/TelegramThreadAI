@@ -9,7 +9,7 @@ from app.utils.access_token import create_access_token
 from app.utils.telegram_login import verify_telegram_login
 from app.web.depends import get_repo
 
-from .shemas.login import LoginData, LoginResponse
+from ..shemas.login import LoginData, LoginResponse
 
 auth_router = APIRouter(
     prefix="/auth",

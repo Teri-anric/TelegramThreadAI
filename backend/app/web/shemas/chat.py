@@ -11,7 +11,8 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.db.models.chat import ChatType
-from app.web.api.shemas.api import ApiResponse
+from app.web.shemas.api import ApiResponse
+from app.web.shemas.paginate import PaginatedResponse
 
 
 class ChatResponse(BaseModel):
@@ -89,3 +90,11 @@ class ChatUpdateRequest(BaseModel):
     description: Optional[str] = Field(
         None, max_length=500, description="Description of the chat"
     )
+
+
+
+class ChatListResponse(PaginatedResponse[ChatResponse]):
+    """
+    Response schema for a list of chats.
+    """
+    pass

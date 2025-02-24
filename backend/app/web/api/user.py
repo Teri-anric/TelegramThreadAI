@@ -5,8 +5,8 @@ User-related API endpoints for the web application.
 from fastapi import APIRouter, Depends
 
 from app.db.models.user import User
-from app.web.api.shemas.user import UserSchema
-from app.web.depends import get_current_user
+from ..shemas.user import UserSchema
+from ..depends import get_current_user
 
 user_router = APIRouter(prefix="/users", tags=["Users"])
 

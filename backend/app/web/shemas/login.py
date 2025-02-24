@@ -9,8 +9,8 @@ from typing import Literal, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.web.api.shemas.api import ApiResponse
-from app.web.api.shemas.user import UserSchema
+from ..shemas.api import ApiResponse
+from ..shemas.user import UserSchema
 
 
 class TelegramLoginWidgetCredentials(BaseModel):
