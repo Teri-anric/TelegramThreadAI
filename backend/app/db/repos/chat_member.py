@@ -9,12 +9,13 @@ within chat groups.
 from typing import List, Optional
 from uuid import UUID
 
-from sqlalchemy import update
+from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.future import select
 
+from app.db.models.chat import Chat
 from app.db.models.chat_member import ChatMember, ChatMemberStatus
 from app.db.repos.base import BaseRepository
+from app.db.types.pagination import Pagination
 
 
 class ChatMemberRepository(BaseRepository):
@@ -167,7 +168,7 @@ class ChatMemberRepository(BaseRepository):
             new_status=ChatMemberStatus.BANNED,
         )
 
-    # ### Getters ###
+    # ### Getters: Chat Members ###
 
     async def get_chat_member(
         self, chat_id: UUID, user_id: UUID
@@ -187,8 +188,8 @@ class ChatMemberRepository(BaseRepository):
         return result.scalar_one_or_none()
 
     async def get_chat_members_by_status(
-        self, chat_id: UUID, status: ChatMemberStatus
-    ) -> List[ChatMember]:
+        self, chat_id: UUID, status: ChatMemberStatus, page: int = 1, per_page: int = 50
+    ) -> Pagination[ChatMember]:
         """
         Get chat members by status.
 
@@ -201,27 +202,42 @@ class ChatMemberRepository(BaseRepository):
                 ChatMember.chat_id == chat_id, ChatMember.status == status
             )
         )
-        return result.scalars().all()
+        return await Pagination.from_query(
+            self.db,
+            query=result,
+            page=page,
+            per_page=per_page
+        )
 
-    async def get_chat_members(self, chat_id: UUID) -> List[ChatMember]:
+    async def get_chat_members(self, chat_id: UUID, page: int = 1, per_page: int = 50) -> Pagination[ChatMember]:
         """
         Get chat members.
 
         :param chat_id: The ID of the chat.
         :return: A list of chat members.
         """
-        return await self.get_chat_members_by_status(chat_id, ChatMemberStatus.MEMBER)
+        return await self.get_chat_members_by_status(
+            chat_id=chat_id,
+            status=ChatMemberStatus.MEMBER,
+            page=page,
+            per_page=per_page
+        )
 
-    async def get_chat_admins(self, chat_id: UUID) -> List[ChatMember]:
+    async def get_chat_admins(self, chat_id: UUID, page: int = 1, per_page: int = 50) -> Pagination[ChatMember]:
         """
         Get chat admins.
 
         :param chat_id: The ID of the chat.
         :return: A list of chat admins.
         """
-        return await self.get_chat_members_by_status(chat_id, ChatMemberStatus.ADMIN)
+        return await self.get_chat_members_by_status(
+            chat_id=chat_id,
+            status=ChatMemberStatus.ADMIN,
+            page=page,
+            per_page=per_page
+        )
 
-    async def get_chat_join_requests(self, chat_id: UUID) -> List[ChatMember]:
+    async def get_chat_join_requests(self, chat_id: UUID, page: int = 1, per_page: int = 50) -> Pagination[ChatMember]:
         """
         Get chat join requests.
 
@@ -229,14 +245,98 @@ class ChatMemberRepository(BaseRepository):
         :return: A list of chat join requests.
         """
         return await self.get_chat_members_by_status(
-            chat_id, ChatMemberStatus.JOIN_REQUEST
+            chat_id=chat_id,
+            status=ChatMemberStatus.JOIN_REQUEST,
+            page=page,
+            per_page=per_page
         )
 
-    async def get_chat_banned_members(self, chat_id: UUID) -> List[ChatMember]:
+    async def get_chat_banned_members(self, chat_id: UUID, page: int = 1, per_page: int = 50) -> Pagination[ChatMember]:
         """
         Get chat banned members.
 
         :param chat_id: The ID of the chat.
         :return: A list of banned chat members.
         """
-        return await self.get_chat_members_by_status(chat_id, ChatMemberStatus.BANNED)
+        return await self.get_chat_members_by_status(
+            chat_id=chat_id,
+            status=ChatMemberStatus.BANNED,
+            page=page,
+            per_page=per_page
+        )
+    
+    # ### Getters: User Chats ###
+
+    async def get_user_chats_by_status(
+        self, 
+        user_id: UUID, 
+        statuses: List[ChatMemberStatus],
+        page: int = 1,
+        per_page: int = 50
+    ) -> Pagination[Chat]:
+        """
+        Get paginated chats where the user has a specific status.
+
+        :param user_id: The ID of the user.
+        :param statuses: List of statuses to filter chats by.
+        :param page: Page number for pagination.
+        :param per_page: Number of chats per page.
+        :return: Paginated list of chats.
+        """
+        query = (
+            select(Chat)
+            .join(ChatMember, Chat.id == ChatMember.chat_id)
+            .where(
+                ChatMember.user_id == user_id,
+                ChatMember.status.in_(statuses)
+            )
+            .order_by(Chat.created_at.desc())
+        )
+        return await Pagination.from_query(
+            self.db,
+            query=query,
+            page=page,
+            per_page=per_page
+        )
+
+    async def get_user_active_chats(
+        self, 
+        user_id: UUID,
+        page: int = 1,
+        per_page: int = 50
+    ) -> Pagination[Chat]:
+        """
+        Get paginated chats where the user is an active member.
+
+        :param user_id: The ID of the user.
+        :param page: Page number for pagination.
+        :param per_page: Number of chats per page.
+        :return: Paginated list of chats.
+        """
+        return await self.get_user_chats_by_status(
+            user_id=user_id,
+            statuses=[ChatMemberStatus.MEMBER, ChatMemberStatus.ADMIN, ChatMemberStatus.OWNER],
+            page=page,
+            per_page=per_page
+        )
+
+    async def get_user_pending_chats(
+        self, 
+        user_id: UUID,
+        page: int = 1,
+        per_page: int = 50
+    ) -> Pagination[Chat]:
+        """
+        Get paginated chats where the user has a pending status.
+
+        :param user_id: The ID of the user.
+        :param page: Page number for pagination.
+        :param per_page: Number of chats per page.
+        :return: Paginated list of chats.
+        """
+        return await self.get_user_chats_by_status(
+            user_id=user_id,
+            statuses=[ChatMemberStatus.JOIN_REQUEST],
+            page=page,
+            per_page=per_page
+        )
